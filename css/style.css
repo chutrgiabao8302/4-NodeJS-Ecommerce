@@ -267,4 +267,37 @@ header {
     font-size: 1rem;
     font-weight: 500;
 }
-/* Cancel page */
+/* Making Responsive */
+@media (max-width: 1080px) {
+    .nav {
+        padding: 12px 0;
+    }
+    .logo {
+        font-size: 1rem;
+    }
+    .cart {
+        width: 320px;
+
+    }
+}
+@media (max-width: 400px) {
+    .nav {
+        padding: 12px 0;
+    }
+    .logo {
+        font-size: 1rem;
+    }
+    .cart {
+        width: 320px;
+
+    }
+}
+@media (max-width: 360px) {
+    .shop {
+        margin-top: 1rem !important;
+    }
+    .cart {
+        width: 100%;
+
+    }
+}
