@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import stripe from 'stripe';
+import db from './config/db/index.js';
+import Checkout from './models/Checkout.js';
 const PORT = 3000;
 
 // Load variables
@@ -11,6 +13,7 @@ const app = express();
 
 app.use(express.static('public'));
 app.use(express.json());
+db.connect();
 
 // Home route
 app.get('/', (req, res) => {
@@ -50,6 +53,28 @@ app.post('/stripe-checkout', async (req, res) => {
     });
     console.log('lineItems:', lineItems);
 
+    // -- MY DB --
+    let checkout = {
+        products: [],
+    };
+    
+
+    
+    for (let i = 0; i < lineItems.length; i++) {
+        let product = {
+            product_name: lineItems[i].price_data.product_data.name,
+            price: parseInt(lineItems[i].price_data.unit_amount),
+            amount: parseInt(lineItems[i].quantity)
+        }
+
+        checkout.products.push(product);
+    }
+    console.log(checkout)
+
+    new Checkout(checkout).save();
+
+    // End Db
+    
     // Create checkout session
     const session = await stripeGateway.checkout.sessions.create({
         payment_method_types: ['card'], 
@@ -60,6 +85,9 @@ app.post('/stripe-checkout', async (req, res) => {
         //  Asking address in Stripe
         billing_address_collection: 'required'
     });
+
+    
+
     res.json(session.url);
 });
 
