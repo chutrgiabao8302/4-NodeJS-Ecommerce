@@ -11,9 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
     "express.js": "^1.0.0",
-    "nodemon": "^3.0.1",
+    "mongoose": "^7.5.2",
     "stripe": "^13.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

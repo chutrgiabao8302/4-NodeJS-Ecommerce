@@ -52,10 +52,14 @@ header {
     color: var(--bg-color);
     font-weight: 600;
 }
-#cart-icon {
+#cart-icon, #logout-icon {
     position: relative;
     font-size: 1.8rem;
     cursor: pointer;
+    margin: 0 10px;
+}
+a {
+    color: #fff;
 }
 #cart-icon[data-quantity="0"]::after {
     contain: "";

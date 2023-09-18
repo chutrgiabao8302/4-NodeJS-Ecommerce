@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="css/register.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <form class="form" action="/register" method="post">
+        <div class="title">Welcome</div>
+        <div class="subtitle">Let's create your account!</div>
+  
+        <div class="input-container ic1">
+          <input placeholder="" type="text" class="input" id="username" name="username">
+          <div class="cut"></div>
+          <label class="iLabel" for="username">Username</label>
+        </div>
+  
+        <div class="input-container ic2">
+          <input placeholder="" type="password" class="input" id="password" name="password">
+          <div class="cut"></div>
+          <label class="iLabel" for="password">Password</label>
+        </div>
+
+        <div class="input-container ic2">
+            <input placeholder="" type="text" class="input" id="address" name="address">
+            <div class="cut"></div>
+            <label class="iLabel" for="address">Address</label>  
+        </div>
+
+        <div class="input-container ic2">
+            <input placeholder="" type="number" class="input" id="age" name="age">
+            <div class="cut"></div>
+            <label class="iLabel" for="age">Age</label>
+          </div>
+
+        <button class="submit" type="text">Register</button>
+        <a href="/login"><i class='bx bx-arrow-back color-white'></i></a>
+        
+    </form>
+</body>
+</html>
