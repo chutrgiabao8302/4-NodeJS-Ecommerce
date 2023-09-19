@@ -22,14 +22,6 @@ app.use(cookieParser('SUD'));
 app.use(session({ cookie: { maxAge: 30000000 } })); // Save data on website on next visits
 db.connect();
 
-// Home route
-app.use('/', (req, res) => {
-    if (!req.session.username) {
-        return res.redirect('/login');
-    }
-    return res.sendFile('./views/index.html', {root: "public"});
-});
-
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
 })
@@ -182,7 +174,13 @@ app.post('/stripe-checkout', async (req, res) => {
     res.json(session.url);
 });
 
-
+// Home route
+app.use('/', (req, res) => {
+    if (!req.session.username) {
+        return res.redirect('/login');
+    }
+    return res.sendFile('./views/index.html', {root: "public"});
+});
 
 
 
