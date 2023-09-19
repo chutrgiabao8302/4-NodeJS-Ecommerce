@@ -22,6 +22,83 @@ app.use(cookieParser('SUD'));
 app.use(session({ cookie: { maxAge: 30000000 } })); // Save data on website on next visits
 db.connect();
 
+// Home route
+app.use('/', (req, res) => {
+    if (!req.session.username) {
+        return res.redirect('/login');
+    }
+    return res.sendFile('./views/index.html', {root: "public"});
+});
+
+app.listen(PORT, () => {
+    console.log(`listening on port ${PORT}`);
+})
+
+// Login route
+app.get('/login', (req, res) => {
+    return res.sendFile('./views/login.html', {root: "public"});
+});
+
+// Login method
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    let myAccount = await Account.findOne({
+        username: username
+    }).lean();
+
+    // return res.json(myAccount);
+    if (myAccount) {
+        if (myAccount.password == password) {
+            req.session.username = username;
+            return res.redirect('/');
+        } else {
+            return res.json({
+                success: false,
+                msg: `Incorrect password`,
+            })
+        }
+    } else {
+        return res.json({
+            success: false,
+            msg: `This account doesn't exist`,
+        });
+    }
+})
+
+// Register route
+app.get('/register', (req, res) => {
+    return res.sendFile('./views/register.html', {root: "public"});
+});
+
+// Register method
+app.post('/register', async (req, res) => {
+    // const username = req.body.username
+    // const password = req.body.password
+    const { username, password, address, age } = req.body;
+    let account = {
+        username: username,
+        password: password,
+        address: address,
+        age: age
+    }
+    console.log(req.body);
+    await new Account(account).save();
+
+    return res.redirect('/login');
+})
+
+// Logout method
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    return res.redirect('/login');
+})
+
+
+// Forgot password page
+app.get('/forgot_password', (req, res) => {
+    return res.sendFile('./views/forgot_password.html', {root: "public"});
+})
 
 // Success
 app.get('/success', (req, res) => {
@@ -32,27 +109,6 @@ app.get('/success', (req, res) => {
 app.get('/cancel', (req, res) => {
     return res.sendFile('./views/cancel.html', {root: "public"});
 });
-
-// Login page
-app.get('/login', (req, res) => {
-    return res.sendFile('./views/login.html', {root: "public"});
-});
-
-// Logout method
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    return res.redirect('/login');
-})
-
-// Register page
-app.get('/register', (req, res) => {
-    return res.sendFile('./views/register.html', {root: "public"});
-});
-
-// Forgot password page
-app.get('/forgot_password', (req, res) => {
-    return res.sendFile('./views/forgot_password.html', {root: "public"});
-})
 
 // Forgot password method
 app.post('/forgot_password' , async (req, res) => {
@@ -69,8 +125,6 @@ app.post('/forgot_password' , async (req, res) => {
             msg: `Invalid username or address`,
         })
     }
-    // return res.json(myAccount);
-
 })
 
 // Stripe
@@ -96,7 +150,7 @@ app.post('/stripe-checkout', async (req, res) => {
     });
     console.log('lineItems:', lineItems);
 
-    // Bao DB
+    // Looking like filling data into cell of the schema
     let checkout = {
         products: [],
     };
@@ -128,60 +182,10 @@ app.post('/stripe-checkout', async (req, res) => {
     res.json(session.url);
 });
 
-// Sign up method
-app.post('/register', async (req, res) => {
-    // const username = req.body.username
-    // const password = req.body.password
-    const { username, password, address, age } = req.body;
-    let account = {
-        username: username,
-        password: password,
-        address: address,
-        age: age
-    }
-    console.log(req.body);
-    await new Account(account).save();
 
-    return res.redirect('/login');
-})
 
-// Login method
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
 
-    let myAccount = await Account.findOne({
-        username: username
-    }).lean();
 
-    // return res.json(myAccount);
-    if (myAccount) {
-        if (myAccount.password == password) {
-            req.session.username = username;
-            return res.redirect('/');
-        } else {
-            return res.json({
-                success: false,
-                msg: `Incorrect password`,
-            })
-        }
-    } else {
-        return res.json({
-            success: false,
-            msg: `This account doesn't exist`,
-        });
-    }
-})
 
-// Home route
-app.use('/', (req, res) => {
-    if (!req.session.username) {
-        return res.redirect('/login');
-    }
-    return res.sendFile('./views/index.html', {root: "public"});
-});
-
-app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
-})
 
 
