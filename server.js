@@ -181,11 +181,3 @@ app.post('/stripe-checkout', async (req, res) => {
     });
     res.json(session.url);
 });
-
-
-
-
-
-
-
-
