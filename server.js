@@ -22,16 +22,8 @@ app.use(cookieParser('SUD'));
 app.use(session({ cookie: { maxAge: 30000000 } })); // Save data on website on next visits
 db.connect();
 
-// Home route
-app.use('/', (req, res) => {
-    if (!req.session.username) {
-        return res.redirect('/login');
-    }
-    return res.sendFile('./views/index.html', {root: "public"});
-});
-
 app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
+    console.log(`Listening on port ${PORT}`);
 })
 
 // Login route
@@ -134,8 +126,8 @@ let DOMAIN = process.env.DOMAIN;
 app.post('/stripe-checkout', async (req, res) => {
     const lineItems = req.body.items.map((item) => {
         const unitAmount = parseInt(item.price.replace(/[^0-9.-]+/g, "") * 100);
-        console.log("item-price:", item.price);
-        console.log("unitAmount:", unitAmount);
+        // console.log("item-price:", item.price);
+        // console.log("unitAmount:", unitAmount);
         return {
             price_data: {
                 currency: 'usd',
@@ -181,3 +173,17 @@ app.post('/stripe-checkout', async (req, res) => {
     });
     res.json(session.url);
 });
+
+// Home route
+app.use('/', (req, res) => {
+    if(!req.session.username) {
+        return res.redirect('/login');
+    }
+    return res.sendFile('./views/index.html', {root: 'public'});
+})
+
+
+
+
+
+
