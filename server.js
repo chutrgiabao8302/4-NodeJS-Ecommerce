@@ -7,6 +7,7 @@ import Account from './models/Account.js';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import flash from 'express-flash';
+import Product from './models/Product.js';
 const PORT = 3000;
 
 // Load variables
@@ -173,6 +174,84 @@ app.post('/stripe-checkout', async (req, res) => {
     });
     res.json(session.url);
 });
+
+
+// Product ROuter
+
+app.post('/create_product', async (req, res, next) => {
+    const { product_name, price, brand, desc, origin } = req.body;
+
+    let product = {
+        product_name: product_name,
+        price: price, 
+        brand: brand,
+        desc: desc,
+        origin: origin
+    }
+
+    try {
+        await new Product(product).save();
+        return res.json({
+            success: true,
+            msg: 'Product created'
+        })
+    }
+    catch (error) {
+        return res.json({
+            success: false,
+            err: error,
+            msg: 'Error'
+        })
+    }
+})
+
+app.put('/update_product', async (req, res, next) => {
+    const { product_name, new_price } = req.body;
+
+    let myProduct = await Product.findOne({product_name: product_name});
+
+    if(myProduct) {
+        myProduct.price = new_price;
+        await myProduct.save();
+        return res.json({
+            success: true,
+            msg: 'Product updated'
+        })
+    }else {
+        return res.json({
+            success: false,
+            msg: 'Not found'
+        })
+    }
+})
+
+
+app.delete('/delete_product', async (req, res) => {
+    const { product_name } = req.body;
+    
+    await Product.findOneAndDelete({product_name: product_name})
+        .then((myProduct) => {
+            if(myProduct) {
+                return res.json({
+                    success: true,
+                    msg: 'Product deleted'
+                })
+            } 
+            else {
+                return res.json({
+                    success: false, 
+                    msg: 'Not found'
+                })
+            }
+        })
+        .catch(err => {
+            return res.json({
+                success: false,
+                err: err,
+                msg: 'Loi he thong'
+            })
+        })
+})
 
 // Home route
 app.use('/', (req, res) => {
